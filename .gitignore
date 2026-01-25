@@ -43,3 +43,9 @@ coverage/
 # Cache
 .cache/
 .eslintcache
+
+# Screenshots (for documentation/demo only)
+screenshots/
+*.png
+*.jpg
+*.jpeg
