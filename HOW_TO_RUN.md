@@ -1,6 +1,22 @@
 # 🚀 How to Run the YouTube Frame Capture Application
 
-## Quick Start (3 Steps)
+## Easiest Way (Automated Script)
+
+### On Linux/Mac:
+```bash
+./run.sh
+```
+
+### On Windows:
+```cmd
+run.bat
+```
+
+Then open **http://localhost:8000** in your browser. Done! 🎉
+
+---
+
+## Manual Start (3 Steps)
 
 ### Step 1: Navigate to the Application Folder
 ```bash

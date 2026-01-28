@@ -2,10 +2,16 @@
 
 Choose your preferred method:
 
-## Method 1: One-Line Command ⚡ (Easiest)
+## Method 1: Automated Script ⚡ (Easiest)
 
+### Linux/Mac:
 ```bash
 ./run.sh
+```
+
+### Windows:
+```cmd
+run.bat
 ```
 
 Then open: **http://localhost:8000**
