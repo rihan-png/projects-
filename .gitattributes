@@ -1,0 +1,33 @@
+# Git attributes for proper line ending handling
+
+# Auto detect text files and perform LF normalization
+* text=auto
+
+# Windows batch files should always use CRLF line endings
+*.bat text eol=crlf
+*.cmd text eol=crlf
+
+# Shell scripts should always use LF line endings  
+*.sh text eol=lf
+
+# Explicitly declare text files
+*.md text
+*.txt text
+*.json text
+*.js text
+*.css text
+*.html text
+*.py text
+*.c text
+*.cpp text
+*.h text
+*.hpp text
+
+# Binary files
+*.png binary
+*.jpg binary
+*.jpeg binary
+*.gif binary
+*.ico binary
+*.pdf binary
+*.zip binary
