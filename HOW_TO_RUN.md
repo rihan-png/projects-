@@ -117,6 +117,13 @@ python3 -m http.server 8080
 - Check if the server is running (should see "Serving HTTP on...")
 - Try a different browser (Chrome, Firefox recommended)
 
+### run.bat not working on Windows
+If you get errors running `run.bat` in Windows CMD:
+- Make sure you're in the project root directory (not inside `youtube-frame-capture`)
+- The file should have Windows line endings (CRLF) - this is now automatically handled by Git
+- Try running as: `.\run.bat` or just `run.bat`
+- If you cloned the repository before this fix, re-clone or pull the latest changes
+
 ---
 
 ## Need More Help?
