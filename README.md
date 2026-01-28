@@ -6,21 +6,24 @@ This repository contains various programming projects and educational tools.
 
 **A browser-based tool for intelligently capturing frames from educational YouTube videos.**
 
-### 🚀 Quick Start
+### 🚀 How to Run
 
-**Option 1: Use the Run Script (Easiest)**
+**Easiest Way (One Command):**
 ```bash
 ./run.sh
 ```
+Then open **http://localhost:8000** in your browser.
 
-**Option 2: Manual Start**
+**Alternative:**
 ```bash
 cd youtube-frame-capture
 python3 -m http.server 8000
-# Open http://localhost:8000 in your browser
 ```
+Then open **http://localhost:8000** in your browser.
 
-**Need Help?** See [HOW_TO_RUN.md](HOW_TO_RUN.md) for detailed instructions.
+**Need Help?** 
+- 📖 [HOW_TO_RUN.md](HOW_TO_RUN.md) - Detailed instructions
+- 🎯 [QUICK_REFERENCE.md](QUICK_REFERENCE.md) - All methods at a glance
 
 ### 📚 Documentation
 
