@@ -1,0 +1,12 @@
+{ 
+"company" : "Demo internship",
+  "intern" : {
+    "name" : "Rihan",
+    "role" : "frontend Intern"
+    "skills" : [ "HTML" ,"json" ,"Git"]
+  },
+  "tasks" : [
+    { "id": 1 , "title" : "Learn JSON basics ", "status" : "done" },
+    {"id" : 2 , "title" : "practice Git" , "status" : "in progress" }
+  ]
+}
