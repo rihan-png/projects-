@@ -1,1 +1,1 @@
-This repository contains JSON practice files for preparation.
+This  is my repository for projects
