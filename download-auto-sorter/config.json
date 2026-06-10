@@ -1,0 +1,83 @@
+{
+  "downloadsPath": "",
+  "settleSeconds": 8,
+  "skipExtensions": [
+    ".crdownload",
+    ".download",
+    ".part",
+    ".tmp"
+  ],
+  "categories": {
+    "Documents": [
+      ".pdf",
+      ".doc",
+      ".docx",
+      ".ppt",
+      ".pptx",
+      ".xls",
+      ".xlsx",
+      ".txt",
+      ".md"
+    ],
+    "Images": [
+      ".jpg",
+      ".jpeg",
+      ".png",
+      ".gif",
+      ".webp",
+      ".bmp",
+      ".svg"
+    ],
+    "Videos": [
+      ".mp4",
+      ".mov",
+      ".mkv",
+      ".avi",
+      ".wmv",
+      ".webm"
+    ],
+    "Audio": [
+      ".mp3",
+      ".wav",
+      ".m4a",
+      ".aac",
+      ".flac",
+      ".ogg"
+    ],
+    "Installers": [
+      ".exe",
+      ".msi",
+      ".appinstaller",
+      ".rpm"
+    ],
+    "Archives": [
+      ".zip",
+      ".rar",
+      ".7z",
+      ".tar",
+      ".gz"
+    ],
+    "Code and Projects": [
+      ".cpp",
+      ".c",
+      ".h",
+      ".py",
+      ".js",
+      ".ts",
+      ".html",
+      ".htm",
+      ".css",
+      ".json",
+      ".ipynb",
+      ".pdsprj",
+      ".pbix",
+      ".drp",
+      ".ics",
+      ".conf",
+      ".lock"
+    ],
+    "Shortcuts": [
+      ".lnk"
+    ]
+  }
+}
