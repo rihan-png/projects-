@@ -1,0 +1,669 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Cyborg Landing</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://unpkg.com/react@18/umd/react.development.js" crossorigin></script>
+  <script src="https://unpkg.com/react-dom@18/umd/react-dom.development.js" crossorigin></script>
+  <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+  <style>
+    body { margin: 0; }
+  </style>
+</head>
+<body>
+  <div id="root"></div>
+
+  <script type="text/babel">
+    const { useState, useEffect } = React;
+
+    const IconBase = ({ className = '', children, viewBox = '0 0 24 24' }) => (
+      <svg className={className} viewBox={viewBox} fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+        {children}
+      </svg>
+    );
+
+    const Terminal = (props) => (
+      <IconBase {...props}>
+        <path d="M4 5h16v14H4z" />
+        <path d="m8 9 3 3-3 3" />
+        <path d="M13 15h4" />
+      </IconBase>
+    );
+
+    const Cpu = (props) => (
+      <IconBase {...props}>
+        <rect x="6" y="6" width="12" height="12" rx="2" />
+        <rect x="9" y="9" width="6" height="6" rx="1" />
+        <path d="M9 2v4M15 2v4M9 18v4M15 18v4M2 9h4M2 15h4M18 9h4M18 15h4" />
+      </IconBase>
+    );
+
+    const Zap = (props) => (
+      <IconBase {...props}>
+        <path d="m13 2-8 10h6l-1 10 8-10h-6z" />
+      </IconBase>
+    );
+
+    const ChevronRight = (props) => (
+      <IconBase {...props}>
+        <path d="m9 6 6 6-6 6" />
+      </IconBase>
+    );
+
+    const Fingerprint = (props) => (
+      <IconBase {...props}>
+        <path d="M12 2a8 8 0 0 0-8 8c0 1.3.3 2.5.8 3.6" />
+        <path d="M8 12a4 4 0 0 1 8 0c0 2.2-.5 4.1-1.4 5.6" />
+        <path d="M12 6a6 6 0 0 1 6 6c0 3.1-.8 5.9-2.3 8.2" />
+        <path d="M12 10a2 2 0 0 1 2 2c0 1.2-.2 2.3-.6 3.2" />
+        <path d="M6.4 18.5A10 10 0 0 1 4 12" />
+      </IconBase>
+    );
+
+    const Activity = (props) => (
+      <IconBase {...props}>
+        <path d="M4 12h3l2-5 4 10 2-5h5" />
+      </IconBase>
+    );
+
+    const Crosshair = (props) => (
+      <IconBase {...props}>
+        <circle cx="12" cy="12" r="7" />
+        <path d="M12 2v4M12 18v4M2 12h4M18 12h4" />
+        <circle cx="12" cy="12" r="1.5" />
+      </IconBase>
+    );
+
+    const Code = (props) => (
+      <IconBase {...props}>
+        <path d="m10 8-4 4 4 4" />
+        <path d="m14 8 4 4-4 4" />
+      </IconBase>
+    );
+
+    const Network = (props) => (
+      <IconBase {...props}>
+        <circle cx="6" cy="6" r="2" />
+        <circle cx="18" cy="6" r="2" />
+        <circle cx="12" cy="18" r="2" />
+        <path d="M8 7.5 11 16M16 7.5 13 16M8 6h8" />
+      </IconBase>
+    );
+
+    const Trophy = (props) => (
+      <IconBase {...props}>
+        <path d="M8 4h8v3a4 4 0 0 1-8 0z" />
+        <path d="M8 7H5a2 2 0 0 0 2 3" />
+        <path d="M16 7h3a2 2 0 0 1-2 3" />
+        <path d="M10 11v3a2 2 0 0 1-2 2h8a2 2 0 0 1-2-2v-3" />
+        <path d="M9 20h6" />
+      </IconBase>
+    );
+
+    const Send = (props) => (
+      <IconBase {...props}>
+        <path d="m22 2-7 20-4-9-9-4z" />
+        <path d="M22 2 11 13" />
+      </IconBase>
+    );
+
+    const cyberStyles = `
+  @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;500;700;900&family=Rajdhani:wght@400;500;600;700&family=Share+Tech+Mono&display=swap');
+
+  :root {
+    --neon-cyan: #00f0ff;
+    --neon-magenta: #ff003c;
+    --neon-yellow: #fcee0a;
+    --dark-bg: #030305;
+    --panel-bg: rgba(3, 3, 5, 0.7);
+    --grid-color: rgba(0, 240, 255, 0.07);
+  }
+
+  body {
+    background-color: var(--dark-bg);
+    color: var(--neon-cyan);
+    font-family: 'Rajdhani', sans-serif;
+    overflow-x: hidden;
+    scroll-behavior: smooth;
+  }
+
+  .font-mono-tech { font-family: 'Share Tech Mono', monospace; }
+  .font-display { font-family: 'Orbitron', sans-serif; }
+
+  /* CRT Scanline Overlay */
+  .crt-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background: linear-gradient(
+      rgba(18, 16, 16, 0) 50%,
+      rgba(0, 0, 0, 0.25) 50%
+    );
+    background-size: 100% 4px;
+    z-index: 9999;
+    pointer-events: none;
+    opacity: 0.4;
+  }
+
+  /* Glitch Text Effect */
+  .glitch {
+    position: relative;
+    display: inline-block;
+  }
+  .glitch::before,
+  .glitch::after {
+    content: attr(data-text);
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: transparent;
+  }
+  .glitch::before {
+    left: 2px;
+    text-shadow: -2px 0 var(--neon-magenta);
+    clip-path: polygon(0 0, 100% 0, 100% 33%, 0 33%);
+    animation: glitch-anim 2s infinite linear alternate-reverse;
+  }
+  .glitch::after {
+    left: -2px;
+    text-shadow: -2px 0 var(--neon-cyan);
+    clip-path: polygon(0 67%, 100% 67%, 100% 100%, 0 100%);
+    animation: glitch-anim2 3s infinite linear alternate-reverse;
+  }
+  
+  .glitch-hover:hover {
+    animation: glitch-skew 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94) both infinite;
+  }
+
+  @keyframes glitch-anim {
+    0% { clip-path: polygon(0 0, 100% 0, 100% 33%, 0 33%); }
+    20% { clip-path: polygon(0 20%, 100% 20%, 100% 44%, 0 44%); }
+    40% { clip-path: polygon(0 40%, 100% 40%, 100% 60%, 0 60%); }
+    60% { clip-path: polygon(0 60%, 100% 60%, 100% 20%, 0 20%); }
+    80% { clip-path: polygon(0 80%, 100% 80%, 100% 80%, 0 80%); }
+    100% { clip-path: polygon(0 10%, 100% 10%, 100% 30%, 0 30%); }
+  }
+  @keyframes glitch-anim2 {
+    0% { clip-path: polygon(0 67%, 100% 67%, 100% 100%, 0 100%); }
+    20% { clip-path: polygon(0 80%, 100% 80%, 100% 100%, 0 100%); }
+    40% { clip-path: polygon(0 10%, 100% 10%, 100% 40%, 0 40%); }
+    60% { clip-path: polygon(0 30%, 100% 30%, 100% 50%, 0 50%); }
+    80% { clip-path: polygon(0 50%, 100% 50%, 100% 70%, 0 70%); }
+    100% { clip-path: polygon(0 90%, 100% 90%, 100% 100%, 0 100%); }
+  }
+  @keyframes glitch-skew {
+    0% { transform: skew(0deg); }
+    20% { transform: skew(-10deg); }
+    40% { transform: skew(10deg); }
+    60% { transform: skew(-5deg); }
+    80% { transform: skew(5deg); }
+    100% { transform: skew(0deg); }
+  }
+
+  /* Cyberpunk UI Elements */
+  .cyber-button {
+    clip-path: polygon(15px 0, 100% 0, 100% calc(100% - 15px), calc(100% - 15px) 100%, 0 100%, 0 15px);
+    position: relative;
+    transition: all 0.3s ease;
+    background: rgba(0, 240, 255, 0.05);
+    border: 1px solid rgba(0, 240, 255, 0.3);
+  }
+  .cyber-button::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(0, 240, 255, 0.2), transparent);
+    transform: translateX(-100%);
+    transition: transform 0.5s ease;
+  }
+  .cyber-button:hover::before {
+    transform: translateX(100%);
+  }
+  .cyber-button::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    right: 0;
+    width: 15px;
+    height: 15px;
+    background-color: var(--neon-cyan);
+    clip-path: polygon(100% 0, 100% 100%, 0 100%);
+    transition: all 0.3s ease;
+  }
+  .cyber-button:hover {
+    background: rgba(0, 240, 255, 0.15);
+    box-shadow: 0 0 15px rgba(0, 240, 255, 0.3);
+  }
+  .cyber-button.primary::after {
+    background-color: var(--neon-magenta);
+  }
+  .cyber-button.primary:hover::after {
+    background-color: var(--neon-cyan);
+    width: 100%;
+    height: 2px;
+    clip-path: none;
+  }
+
+  .cyber-panel {
+    clip-path: polygon(20px 0, 100% 0, 100% calc(100% - 20px), calc(100% - 20px) 100%, 0 100%, 0 20px);
+    border: 1px solid rgba(0, 240, 255, 0.15);
+    background: linear-gradient(135deg, rgba(0,240,255,0.03) 0%, rgba(0,0,0,0.6) 100%);
+    backdrop-filter: blur(10px);
+    position: relative;
+  }
+  .cyber-panel::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 20px;
+    width: 30px;
+    height: 2px;
+    background-color: var(--neon-cyan);
+  }
+
+  /* Form Elements */
+  .cyber-input {
+    background: rgba(0,0,0,0.5);
+    border: 1px solid rgba(0, 240, 255, 0.2);
+    color: var(--neon-cyan);
+    font-family: 'Share Tech Mono', monospace;
+    transition: all 0.3s ease;
+    clip-path: polygon(10px 0, 100% 0, 100% calc(100% - 10px), calc(100% - 10px) 100%, 0 100%, 0 10px);
+  }
+  .cyber-input:focus {
+    outline: none;
+    border-color: var(--neon-magenta);
+    box-shadow: inset 0 0 10px rgba(255, 0, 60, 0.2);
+  }
+  
+  /* Animated Grid */
+  .bg-grid {
+    background-size: 50px 50px;
+    background-image: 
+      linear-gradient(to right, var(--grid-color) 1px, transparent 1px),
+      linear-gradient(to bottom, var(--grid-color) 1px, transparent 1px);
+    mask-image: radial-gradient(circle at 50% 50%, black 30%, transparent 80%);
+    -webkit-mask-image: radial-gradient(circle at 50% 50%, black 30%, transparent 80%);
+    animation: grid-move 20s linear infinite;
+  }
+
+  @keyframes grid-move {
+    0% { background-position: 0 0; }
+    100% { background-position: 50px 50px; }
+  }
+
+  .cursor-blink {
+    animation: blink 1s step-end infinite;
+  }
+  @keyframes blink { 50% { opacity: 0; } }
+
+  /* Floating animation */
+  .float {
+    animation: floating 4s ease-in-out infinite;
+  }
+  @keyframes floating {
+    0% { transform: translateY(0px); }
+    50% { transform: translateY(-15px); }
+    100% { transform: translateY(0px); }
+  }
+`;
+
+    const BootSequence = ({ onComplete }) => {
+      const [lines, setLines] = useState([]);
+      const bootText = [
+        "INITIATING NEXUS PROTOCOL // v9.0.4",
+        "ESTABLISHING SECURE CONNECTION...",
+        "MEM CHECK ... OK [64 TB]",
+        "LOCATING CAMPUS NODES...",
+        "NODE FOUND: SECTOR 7G",
+        "BYPASSING OPTICAL FIREWALLS ... SUCCESS",
+        "SYNCING AMBASSADOR BIOMETRICS ...",
+        "ACCESS GRANTED.",
+        "WAKING SYSTEM OVERSEER..."
+      ];
+
+      useEffect(() => {
+        let currentLine = 0;
+        const interval = setInterval(() => {
+          if (currentLine < bootText.length) {
+            setLines(prev => [...prev, bootText[currentLine]]);
+            currentLine++;
+          } else {
+            clearInterval(interval);
+            setTimeout(onComplete, 600);
+          }
+        }, 250);
+
+        return () => clearInterval(interval);
+      }, [onComplete]);
+
+      return (
+        <div className="fixed inset-0 bg-[#030305] z-[999] flex flex-col justify-center items-start p-8 md:p-24 font-mono-tech text-[#00f0ff] text-lg sm:text-xl md:text-2xl">
+          <div className="max-w-3xl w-full">
+            {lines.map((line, index) => (
+              <div key={index} className="mb-2 flex items-start">
+                <span className="text-[#ff003c] mr-4 mt-1">{`>`}</span>
+                <span className="leading-tight">{line}</span>
+              </div>
+            ))}
+            {lines.length < bootText.length && (
+              <div className="flex items-center mt-2">
+                <span className="text-[#ff003c] mr-4">{`>`}</span>
+                <span className="w-3 h-6 bg-[#00f0ff] cursor-blink"></span>
+              </div>
+            )}
+          </div>
+        </div>
+      );
+    };
+
+    const Navbar = () => (
+      <nav className="w-full fixed top-0 left-0 p-4 md:p-6 flex justify-between items-center z-50 bg-[#030305]/80 backdrop-blur-md border-b border-[#00f0ff]/20">
+        <div className="flex items-center gap-3 group cursor-pointer">
+          <Fingerprint className="text-[#ff003c] w-8 h-8 group-hover:animate-pulse" />
+          <span className="font-display font-bold text-xl md:text-2xl tracking-widest text-white group-hover:text-[#00f0ff] transition-colors">
+            NEXUS<span className="text-[#00f0ff]">_COLLECTIVE</span>
+          </span>
+        </div>
+
+        <div className="hidden md:flex gap-8 font-mono-tech text-sm tracking-widest">
+          <a href="#mission" className="hover:text-[#ff003c] transition-colors relative group py-2">
+            [ MISSION ]
+            <span className="absolute bottom-0 left-0 w-0 h-[2px] bg-[#ff003c] transition-all group-hover:w-full"></span>
+          </a>
+          <a href="#protocols" className="hover:text-[#fcee0a] transition-colors relative group py-2">
+            [ PROTOCOLS ]
+            <span className="absolute bottom-0 left-0 w-0 h-[2px] bg-[#fcee0a] transition-all group-hover:w-full"></span>
+          </a>
+          <a href="#apply" className="text-[#00f0ff] hover:text-white transition-colors relative group py-2">
+            [ INITIATE_LINK ]
+            <span className="absolute bottom-0 left-0 w-full h-[2px] bg-[#00f0ff] transition-all group-hover:bg-white group-hover:shadow-[0_0_10px_#fff]"></span>
+          </a>
+        </div>
+
+        <button className="md:hidden text-[#00f0ff] hover:text-[#ff003c] transition-colors">
+          <Activity className="w-6 h-6" />
+        </button>
+      </nav>
+    );
+
+    const Hero = () => {
+      return (
+        <section className="relative min-h-screen flex items-center justify-center pt-20 px-4 overflow-hidden">
+          <div className="absolute inset-0 bg-grid opacity-60"></div>
+
+          <div className="absolute top-1/4 left-1/4 -translate-x-1/2 -translate-y-1/2 w-[400px] h-[400px] bg-[#00f0ff]/10 blur-[100px] rounded-full pointer-events-none float"></div>
+          <div className="absolute bottom-1/4 right-1/4 translate-x-1/4 translate-y-1/4 w-[500px] h-[500px] bg-[#ff003c]/5 blur-[120px] rounded-full pointer-events-none float" style={{ animationDelay: '-2s' }}></div>
+
+          <div className="absolute top-32 left-6 font-mono-tech text-xs text-[#00f0ff]/40 hidden lg:block tracking-widest leading-relaxed">
+            SYS.REQ: OPTIMAL <br/>
+            LATENCY: 12ms <br/>
+            UPTIME: 99.99% <br/>
+            <span className="text-[#ff003c] animate-pulse">RECRUITMENT: ACTIVE</span>
+          </div>
+          <div className="absolute bottom-32 right-6 font-mono-tech text-xs text-[#00f0ff]/40 text-right hidden lg:block tracking-widest leading-relaxed">
+            TARGET: CAMPUS GRID <br/>
+            SECTOR: AMBASSADOR_NODE <br/>
+            THREAT LEVEL: MINIMAL
+          </div>
+
+          <Crosshair className="absolute top-1/3 left-12 -translate-y-1/2 w-8 h-8 text-[#00f0ff]/10 animate-[spin_10s_linear_infinite]" />
+          <Crosshair className="absolute bottom-1/3 right-12 translate-y-1/2 w-8 h-8 text-[#00f0ff]/10 animate-[spin_10s_linear_infinite_reverse]" />
+
+          <div className="relative z-10 flex flex-col items-center text-center w-full max-w-5xl mt-10">
+            <div className="inline-block mb-6 px-4 py-1.5 border border-[#ff003c]/30 bg-[#ff003c]/10 text-[#ff003c] font-mono-tech text-sm tracking-widest backdrop-blur-sm cyber-panel animate-pulse">
+              ALERT: SEEKING APEX INNOVATORS
+            </div>
+
+            <h1 className="font-display font-black text-5xl md:text-7xl lg:text-8xl xl:text-9xl tracking-tighter leading-[0.9] mb-6 text-white drop-shadow-[0_0_20px_rgba(0,240,255,0.3)]">
+              <span className="glitch" data-text="BECOME THE">BECOME THE</span>
+              <br />
+              <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#00f0ff] via-white to-[#ff003c]">ARCHITECT</span>
+            </h1>
+
+            <p className="font-mono-tech text-[#a0a0a0] text-lg md:text-xl max-w-3xl mb-12 border-l-2 border-[#00f0ff] pl-4 text-left mx-auto">
+              The grid needs leaders. Join the Nexus Collective as a Campus Ambassador.
+              Upgrade your network, unlock cybernetic perks, and lead the technological revolution at your university.
+            </p>
+
+            <div className="flex flex-col sm:flex-row gap-6 w-full sm:w-auto">
+              <a href="#apply" className="cyber-button primary px-10 py-4 text-white font-display font-bold tracking-widest uppercase flex items-center justify-center gap-3 group w-full sm:w-auto text-lg">
+                <Zap className="w-6 h-6 text-[#fcee0a] group-hover:scale-110 transition-transform" />
+                Initiate Link
+              </a>
+
+              <a href="#protocols" className="cyber-button px-10 py-4 text-[#a0a0a0] font-display font-bold tracking-widest uppercase hover:text-white flex items-center justify-center gap-3 transition-colors w-full sm:w-auto text-lg">
+                View Protocols
+              </a>
+            </div>
+          </div>
+
+          <div className="absolute bottom-10 left-1/2 -translate-x-1/2 flex flex-col items-center opacity-50">
+            <span className="font-mono-tech text-xs tracking-widest mb-2">SCROLL_DOWN</span>
+            <div className="w-[1px] h-12 bg-gradient-to-b from-[#00f0ff] to-transparent"></div>
+          </div>
+        </section>
+      );
+    };
+
+    const AmbassadorProtocols = () => {
+      const protocols = [
+        {
+          title: "NEURAL UPGRADES",
+          subtitle: "Skill Development",
+          desc: "Access exclusive workshops, masterclasses, and beta APIs. Elevate your coding capabilities beyond standard human limits.",
+          icon: Code,
+          color: "text-[#00f0ff]",
+          border: "border-[#00f0ff]",
+          bgHover: "hover:bg-[#00f0ff]/5"
+        },
+        {
+          title: "GRID EXPANSION",
+          subtitle: "Elite Networking",
+          desc: "Interface directly with industry leaders and fellow high-tier nodes. Build a network that transcends physical boundaries.",
+          icon: Network,
+          color: "text-[#ff003c]",
+          border: "border-[#ff003c]",
+          bgHover: "hover:bg-[#ff003c]/5"
+        },
+        {
+          title: "CYBER-CREDENTIALS",
+          subtitle: "Swag & Stipends",
+          desc: "Earn high-grade mechanical keyboards, neon apparel, and digital currency stipends for completing campus objectives.",
+          icon: Trophy,
+          color: "text-[#fcee0a]",
+          border: "border-[#fcee0a]",
+          bgHover: "hover:bg-[#fcee0a]/5"
+        }
+      ];
+
+      return (
+        <section id="protocols" className="py-24 px-4 relative z-10 bg-[#030305] border-t border-[#333]">
+          <div className="max-w-7xl mx-auto">
+            <div className="flex flex-col md:flex-row items-start md:items-end justify-between mb-16 gap-6">
+              <div>
+                <div className="flex items-center gap-4 mb-2">
+                  <Cpu className="text-[#ff003c] animate-pulse w-8 h-8" />
+                  <h2 className="font-display text-3xl md:text-5xl font-bold tracking-widest text-white">
+                    AMBASSADOR <span className="text-[#ff003c]">PROTOCOLS</span>
+                  </h2>
+                </div>
+                <p className="font-mono-tech text-[#888] text-lg max-w-xl">
+                  Standard biological entities need not apply. Review your authorized enhancements below.
+                </p>
+              </div>
+              <div className="font-mono-tech text-xs text-[#00f0ff]/50 border border-[#00f0ff]/20 p-2 bg-[#00f0ff]/5">
+                DATA_FRAG: 3/3 <br/>
+                DECRYPTION: COMPLETE
+              </div>
+            </div>
+
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+              {protocols.map((protocol, idx) => (
+                <div key={idx} className={`cyber-panel p-8 group ${protocol.bgHover} transition-colors duration-500 relative overflow-hidden flex flex-col h-full`}>
+                  <div className={`absolute top-0 right-0 w-16 h-16 bg-gradient-to-bl ${protocol.color.replace('text-', 'from-')} to-transparent opacity-10 group-hover:opacity-30 transition-opacity`}></div>
+
+                  <protocol.icon className={`w-14 h-14 mb-6 ${protocol.color} drop-shadow-[0_0_10px_currentColor] group-hover:scale-110 transition-transform duration-500`} />
+
+                  <h3 className="font-display font-bold text-2xl mb-1 text-white tracking-wider">
+                    {protocol.title}
+                  </h3>
+                  <h4 className={`font-mono-tech text-sm mb-4 ${protocol.color} tracking-widest uppercase`}>
+                    // {protocol.subtitle}
+                  </h4>
+
+                  <p className="font-mono-tech text-[#a0a0a0] mb-8 leading-relaxed flex-grow">
+                    {protocol.desc}
+                  </p>
+
+                  <div className="flex justify-between items-center border-t border-[#333] pt-5 mt-auto">
+                    <span className="font-mono-tech text-xs text-[#555] flex items-center gap-2">
+                      <span className="w-2 h-2 rounded-full bg-[#00f0ff] animate-pulse"></span>
+                      SYSTEM READY
+                    </span>
+                    <button className={`text-sm font-bold tracking-widest flex items-center ${protocol.color} opacity-70 group-hover:opacity-100 transition-opacity`}>
+                      ACCESS <ChevronRight className="w-4 h-4 ml-1" />
+                    </button>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+        </section>
+      );
+    };
+
+    const ApplicationForm = () => {
+      return (
+        <section id="apply" className="py-24 px-4 relative z-10 bg-[#050508]">
+          <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,rgba(0,240,255,0.05)_0%,transparent_70%)] pointer-events-none"></div>
+
+          <div className="max-w-4xl mx-auto cyber-panel p-1">
+            <div className="bg-[#030305] p-8 md:p-12 relative overflow-hidden" style={{ clipPath: 'polygon(19px 0, 100% 0, 100% calc(100% - 19px), calc(100% - 19px) 100%, 0 100%, 0 19px)'}}>
+
+              <div className="flex items-center gap-3 mb-8">
+                <Terminal className="text-[#00f0ff] w-6 h-6" />
+                <h2 className="font-display text-2xl md:text-3xl font-bold tracking-widest text-white uppercase glitch-hover" data-text="Initiate Neural Handshake">
+                  Initiate Neural Handshake
+                </h2>
+              </div>
+
+              <form className="space-y-6 relative z-10" onSubmit={(e) => e.preventDefault()}>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                  <div className="space-y-2">
+                    <label className="font-mono-tech text-xs text-[#888] tracking-widest block uppercase">{'<'} Designation {'>'}</label>
+                    <input type="text" placeholder="FULL_NAME" className="cyber-input w-full p-4 text-sm" />
+                  </div>
+                  <div className="space-y-2">
+                    <label className="font-mono-tech text-xs text-[#888] tracking-widest block uppercase">{'<'} Comm_Link {'>'}</label>
+                    <input type="email" placeholder="EMAIL_ADDRESS" className="cyber-input w-full p-4 text-sm" />
+                  </div>
+                </div>
+
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                  <div className="space-y-2">
+                    <label className="font-mono-tech text-xs text-[#888] tracking-widest block uppercase">{'<'} Node_Location {'>'}</label>
+                    <input type="text" placeholder="UNIVERSITY_NAME" className="cyber-input w-full p-4 text-sm" />
+                  </div>
+                  <div className="space-y-2">
+                    <label className="font-mono-tech text-xs text-[#888] tracking-widest block uppercase">{'<'} Primary_Skill {'>'}</label>
+                    <select className="cyber-input w-full p-4 text-sm appearance-none">
+                      <option value="dev">Software Development</option>
+                      <option value="design">UI/UX Cyber-Design</option>
+                      <option value="community">Community Architect</option>
+                      <option value="hardware">Hardware Modding</option>
+                    </select>
+                  </div>
+                </div>
+
+                <div className="space-y-2">
+                  <label className="font-mono-tech text-xs text-[#888] tracking-widest block uppercase">{'<'} Override_Statement {'>'}</label>
+                  <textarea
+                    rows="4"
+                    placeholder="WHY ARE YOU THE OPTIMAL UNIT FOR THIS ROLE?"
+                    className="cyber-input w-full p-4 text-sm resize-none"
+                  ></textarea>
+                </div>
+
+                <div className="pt-4 flex items-center justify-between">
+                  <div className="font-mono-tech text-xs text-[#555] hidden sm:block">
+                    BY SUBMITTING, YOU AGREE TO CYBERNETIC INTEGRATION.
+                  </div>
+                  <button type="submit" className="cyber-button primary px-8 py-4 text-white font-display font-bold tracking-widest uppercase flex items-center gap-3 w-full sm:w-auto justify-center">
+                    Transmit Data <Send className="w-4 h-4" />
+                  </button>
+                </div>
+              </form>
+            </div>
+          </div>
+        </section>
+      );
+    };
+
+    const Footer = () => (
+      <footer className="border-t border-[#00f0ff]/20 bg-[#010101] py-10 px-6 relative z-10 font-mono-tech">
+        <div className="max-w-7xl mx-auto flex flex-col md:flex-row justify-between items-center gap-6">
+          <div className="text-[#666] text-sm text-center md:text-left flex flex-col items-center md:items-start">
+            <div className="flex items-center gap-2 mb-2">
+              <Fingerprint className="w-4 h-4 text-[#00f0ff]" />
+              <p className="font-display font-bold text-white tracking-widest">NEXUS_COLLECTIVE</p>
+            </div>
+            <p className="text-xs">"Engineering Tomorrow's Grid, Today."</p>
+          </div>
+
+          <div className="flex gap-6 text-xs md:text-sm text-[#00f0ff]/60 uppercase tracking-widest">
+            <span className="hover:text-[#00f0ff] cursor-pointer transition-colors">[ DOCS ]</span>
+            <span className="hover:text-[#00f0ff] cursor-pointer transition-colors">[ TERMS ]</span>
+            <span className="hover:text-[#ff003c] cursor-pointer transition-colors">[ DARKNET ]</span>
+          </div>
+
+          <div className="text-center md:text-right text-[#555] text-xs space-y-1">
+            <p className="flex items-center justify-center md:justify-end gap-2">
+              CONNECTION: <span className="text-[#00f0ff]">SECURE</span>
+            </p>
+            <p>ENCRYPTION: AES-256-GCM</p>
+          </div>
+        </div>
+      </footer>
+    );
+
+    const CyborgApp = () => {
+      const [isBooting, setIsBooting] = useState(true);
+
+      return (
+        <>
+          <style dangerouslySetInnerHTML={{ __html: cyberStyles }} />
+          <div className="min-h-screen bg-[#030305] text-[#00f0ff] selection:bg-[#ff003c] selection:text-white">
+            <div className="crt-overlay"></div>
+
+            {isBooting ? (
+              <BootSequence onComplete={() => setIsBooting(false)} />
+            ) : (
+              <div className="animate-in fade-in duration-1000">
+                <Navbar />
+                <main>
+                  <Hero />
+                  <AmbassadorProtocols />
+                  <ApplicationForm />
+                </main>
+                <Footer />
+              </div>
+            )}
+          </div>
+        </>
+      );
+    };
+
+    ReactDOM.createRoot(document.getElementById('root')).render(<CyborgApp />);
+  </script>
+</body>
+</html>
